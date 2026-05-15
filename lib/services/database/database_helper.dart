@@ -27,7 +27,7 @@ class DatabaseHelper {
     String path = join(await getDatabasesPath(), 'fitness_app.db');
     return await openDatabase(
       path,
-      version: 3,
+      version: 4,
       onCreate: _onCreate,
       onUpgrade: _onUpgrade,
     );
@@ -50,7 +50,9 @@ class DatabaseHelper {
           FOREIGN KEY (workoutId) REFERENCES workouts (id) ON DELETE CASCADE
         )
       ''');
-
+    }
+    if (oldVersion < 4) {
+      // Ensure active_programs table exists
       await db.execute('''
         CREATE TABLE IF NOT EXISTS active_programs(
           id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -204,6 +206,12 @@ class DatabaseHelper {
   Future<List<ActiveProgram>> getActivePrograms() async {
     Database db = await database;
     List<Map<String, dynamic>> maps = await db.query('active_programs', where: 'isCompleted = 0');
+    return List.generate(maps.length, (i) => ActiveProgram.fromMap(maps[i]));
+  }
+
+  Future<List<ActiveProgram>> getAllEnrolledPrograms() async {
+    Database db = await database;
+    List<Map<String, dynamic>> maps = await db.query('active_programs', orderBy: 'id DESC');
     return List.generate(maps.length, (i) => ActiveProgram.fromMap(maps[i]));
   }
 

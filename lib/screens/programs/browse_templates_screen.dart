@@ -17,14 +17,40 @@ class _BrowseTemplatesScreenState extends State<BrowseTemplatesScreen> {
   final _dbHelper = DatabaseHelper();
 
   Future<void> _startProgram(Program template) async {
-    final active = ActiveProgram(
-      templateId: template.id!,
-      startDate: DateFormat('yyyy-MM-dd').format(DateTime.now()),
-    );
-    await _dbHelper.enrollInProgram(active);
-    if (!mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Started ${template.name}!'), backgroundColor: Colors.green));
-    Navigator.pop(context); // Close browse
+    try {
+      final active = ActiveProgram(
+        templateId: template.id!,
+        startDate: DateFormat('yyyy-MM-dd').format(DateTime.now()),
+      );
+      await _dbHelper.enrollInProgram(active);
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Started ${template.name}!'),
+          backgroundColor: Colors.green,
+        ),
+      );
+
+      // Navigate directly into the active workout
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ProgramDetailsScreen(
+            program: template,
+            isPreview: false,
+          ),
+        ),
+      );
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error starting program: $e'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
   }
 
   Future<void> _deleteProgram(Program program) async {
@@ -50,9 +76,12 @@ class _BrowseTemplatesScreenState extends State<BrowseTemplatesScreen> {
     if (confirmed == true) {
       await _dbHelper.deleteProgram(program.id!);
       if (!mounted) return;
-      setState(() {}); // Refresh the list
+      setState(() {});
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('${program.name} deleted'), backgroundColor: Colors.grey.shade800),
+        SnackBar(
+          content: Text('${program.name} deleted'),
+          backgroundColor: Colors.grey.shade800,
+        ),
       );
     }
   }
@@ -62,22 +91,11 @@ class _BrowseTemplatesScreenState extends State<BrowseTemplatesScreen> {
     return Scaffold(
       backgroundColor: const Color(0xFFF8F9FB),
       appBar: AppBar(
-        title: const Text('Program Templates', style: TextStyle(fontWeight: FontWeight.bold)),
+        title: const Text('Program Templates',
+            style: TextStyle(fontWeight: FontWeight.bold)),
         backgroundColor: Colors.white,
         elevation: 0,
         foregroundColor: Colors.black,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.add_circle_outline, color: Color(0xFF003CCF)),
-            tooltip: 'Create New Program',
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const AddWorkoutScreen()),
-              ).then((_) => setState(() {}));
-            },
-          ),
-        ],
       ),
       body: FutureBuilder<List<Program>>(
         future: _dbHelper.getPrograms(),
@@ -87,31 +105,21 @@ class _BrowseTemplatesScreenState extends State<BrowseTemplatesScreen> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.library_books_outlined, size: 56, color: Colors.grey.shade300),
+                  Icon(Icons.library_books_outlined,
+                      size: 56, color: Colors.grey.shade300),
                   const SizedBox(height: 16),
-                  const Text('No templates found.', style: TextStyle(color: Colors.grey, fontWeight: FontWeight.bold)),
-                  const SizedBox(height: 8),
-                  ElevatedButton.icon(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => const AddWorkoutScreen()),
-                      ).then((_) => setState(() {}));
-                    },
-                    icon: const Icon(Icons.add, size: 18),
-                    label: const Text('Create Program'),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF003CCF),
-                      foregroundColor: Colors.white,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                    ),
-                  ),
+                  const Text('No templates found.',
+                      style: TextStyle(
+                          color: Colors.grey, fontWeight: FontWeight.bold)),
+                  const SizedBox(height: 6),
+                  const Text('Create your first training program!',
+                      style: TextStyle(color: Colors.grey, fontSize: 12)),
                 ],
               ),
             );
           }
           return ListView.builder(
-            padding: const EdgeInsets.all(20),
+            padding: const EdgeInsets.fromLTRB(20, 20, 20, 100),
             itemCount: snapshot.data!.length,
             itemBuilder: (context, index) {
               final program = snapshot.data![index];
@@ -120,6 +128,36 @@ class _BrowseTemplatesScreenState extends State<BrowseTemplatesScreen> {
           );
         },
       ),
+      // Large FAB at the bottom
+      floatingActionButton: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 20),
+        width: double.infinity,
+        height: 56,
+        child: FloatingActionButton.extended(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => const AddWorkoutScreen()),
+            ).then((_) => setState(() {}));
+          },
+          backgroundColor: const Color(0xFF003CCF),
+          foregroundColor: Colors.white,
+          icon: const Icon(Icons.add, size: 24),
+          label: const Text(
+            'CREATE NEW PROGRAM',
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 14,
+              letterSpacing: 0.5,
+            ),
+          ),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+        ),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
 
@@ -175,9 +213,11 @@ class _BrowseTemplatesScreenState extends State<BrowseTemplatesScreen> {
                 ),
                 // More options menu
                 PopupMenuButton<String>(
-                  icon: const Icon(Icons.more_vert, color: Colors.white70, size: 20),
+                  icon: const Icon(Icons.more_vert,
+                      color: Colors.white70, size: 20),
                   color: Colors.white,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12)),
                   onSelected: (value) {
                     if (value == 'edit') {
                       _editProgram(program);
@@ -190,7 +230,8 @@ class _BrowseTemplatesScreenState extends State<BrowseTemplatesScreen> {
                       value: 'edit',
                       child: Row(
                         children: [
-                          Icon(Icons.edit_outlined, size: 18, color: Color(0xFF003CCF)),
+                          Icon(Icons.edit_outlined,
+                              size: 18, color: Color(0xFF003CCF)),
                           SizedBox(width: 10),
                           Text('Edit Program'),
                         ],
@@ -200,9 +241,11 @@ class _BrowseTemplatesScreenState extends State<BrowseTemplatesScreen> {
                       value: 'delete',
                       child: Row(
                         children: [
-                          Icon(Icons.delete_outline, size: 18, color: Colors.red),
+                          Icon(Icons.delete_outline,
+                              size: 18, color: Colors.red),
                           SizedBox(width: 10),
-                          Text('Delete', style: TextStyle(color: Colors.red)),
+                          Text('Delete',
+                              style: TextStyle(color: Colors.red)),
                         ],
                       ),
                     ),
@@ -239,7 +282,9 @@ class _BrowseTemplatesScreenState extends State<BrowseTemplatesScreen> {
                         borderRadius: BorderRadius.circular(12),
                       ),
                     ),
-                    child: const Text('PREVIEW', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
+                    child: const Text('PREVIEW',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 13)),
                   ),
                 ),
                 const SizedBox(width: 12),
@@ -255,7 +300,9 @@ class _BrowseTemplatesScreenState extends State<BrowseTemplatesScreen> {
                         borderRadius: BorderRadius.circular(12),
                       ),
                     ),
-                    child: const Text('START', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
+                    child: const Text('START',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 13)),
                   ),
                 ),
               ],

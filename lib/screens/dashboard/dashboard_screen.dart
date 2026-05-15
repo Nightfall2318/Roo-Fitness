@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../services/database/database_helper.dart';
 import '../../models/workout/workout.dart';
 import '../settings/settings_screen.dart';
+import '../programs/program_details_screen.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -84,35 +85,40 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   return const SizedBox.shrink(); // Hide if no workouts yet
                 }
                 final workout = snapshot.data!;
-                return Container(
-                  padding: const EdgeInsets.all(20),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(16),
-                    border: Border.all(color: Colors.grey.shade200),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Text('● LAST WORKOUT', style: TextStyle(color: Colors.green, fontSize: 10, fontWeight: FontWeight.bold)),
-                          Icon(Icons.check_circle, color: Colors.green.shade400, size: 20),
-                        ],
-                      ),
-                      const SizedBox(height: 8),
-                      Text(workout.title, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                      Text('${workout.type} • ${workout.durationMinutes} mins', style: const TextStyle(color: Colors.grey, fontSize: 12)),
-                      const SizedBox(height: 15),
-                      Row(
-                        children: [
-                          _buildChip(workout.type),
-                          const SizedBox(width: 8),
-                          _buildChip(workout.date),
-                        ],
-                      ),
-                    ],
+                return GestureDetector(
+                  onTap: () => _navigateToActiveProgram(),
+                  child: Container(
+                    padding: const EdgeInsets.all(20),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(color: Colors.grey.shade200),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Text('● LAST WORKOUT', style: TextStyle(color: Colors.green, fontSize: 10, fontWeight: FontWeight.bold)),
+                            Icon(Icons.check_circle, color: Colors.green.shade400, size: 20),
+                          ],
+                        ),
+                        const SizedBox(height: 8),
+                        Text(workout.title, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                        Text('${workout.type} • ${workout.durationMinutes} mins', style: const TextStyle(color: Colors.grey, fontSize: 12)),
+                        const SizedBox(height: 15),
+                        Row(
+                          children: [
+                            _buildChip(workout.type),
+                            const SizedBox(width: 8),
+                            _buildChip(workout.date),
+                            const Spacer(),
+                            const Icon(Icons.chevron_right, color: Colors.grey, size: 20),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                 );
               }
@@ -129,6 +135,31 @@ class _DashboardScreenState extends State<DashboardScreen> {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Future<void> _navigateToActiveProgram() async {
+    final activePrograms = await _dbHelper.getActivePrograms();
+    if (activePrograms.isEmpty) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('No active program. Start one from the library!'),
+          backgroundColor: Colors.orange,
+        ),
+      );
+      return;
+    }
+
+    final active = activePrograms.first;
+    final program = await _dbHelper.getProgramById(active.templateId);
+    if (program == null || !mounted) return;
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ProgramDetailsScreen(program: program),
       ),
     );
   }
