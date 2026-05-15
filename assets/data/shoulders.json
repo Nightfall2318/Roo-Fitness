@@ -1,0 +1,24 @@
+{
+  "exercises": [
+    {"id": "sh_41", "name": "Overheads Press (Standing Barbell)", "cat": "shoulders", "equip": "barbell", "type": "compound"},
+    {"id": "sh_42", "name": "Seated Dumbbell Shoulder Press", "cat": "shoulders", "equip": "dumbbells", "type": "compound"},
+    {"id": "sh_43", "name": "Military Press", "cat": "shoulders", "equip": "barbell", "type": "compound"},
+    {"id": "sh_44", "name": "Arnold Press", "cat": "shoulders", "equip": "dumbbells", "type": "compound"},
+    {"id": "sh_45", "name": "Dumbbell Lateral Raise", "cat": "shoulders", "equip": "dumbbells", "type": "isolation"},
+    {"id": "sh_46", "name": "Cable Lateral Raise", "cat": "shoulders", "equip": "cable", "type": "isolation"},
+    {"id": "sh_47", "name": "Machine Lateral Raise", "cat": "shoulders", "equip": "machine", "type": "isolation"},
+    {"id": "sh_48", "name": "Front Dumbbell Raise", "cat": "shoulders", "equip": "dumbbells", "type": "isolation"},
+    {"id": "sh_49", "name": "Front Barbell Raise", "cat": "shoulders", "equip": "barbell", "type": "isolation"},
+    {"id": "sh_50", "name": "Rear Delt Dumbbell Fly", "cat": "shoulders", "equip": "dumbbells", "type": "isolation"},
+    {"id": "sh_51", "name": "Rear Delt Cable Fly", "cat": "shoulders", "equip": "cable", "type": "isolation"},
+    {"id": "sh_52", "name": "Upright Row (Barbell or Cable)", "cat": "shoulders", "equip": "barbell", "type": "compound"},
+    {"id": "sh_53", "name": "Push Press", "cat": "shoulders", "equip": "barbell", "type": "compound"},
+    {"id": "sh_54", "name": "Smith Machine Shoulder Press", "cat": "shoulders", "equip": "machine", "type": "compound"},
+    {"id": "sh_55", "name": "Landmine Press (Single Arm)", "cat": "shoulders", "equip": "barbell", "type": "compound"},
+    {"id": "sh_56", "name": "Incline Lateral Raise (lying on bench)", "cat": "shoulders", "equip": "dumbbells", "type": "isolation"},
+    {"id": "sh_57", "name": "Bus Drivers (Plate rotations)", "cat": "shoulders", "equip": "plate", "type": "isolation"},
+    {"id": "sh_58", "name": "Bradford Press", "cat": "shoulders", "equip": "barbell", "type": "compound"},
+    {"id": "sh_59", "name": "Clean and Press", "cat": "shoulders", "equip": "barbell", "type": "compound"},
+    {"id": "sh_60", "name": "Z-Press (Seated on floor)", "cat": "shoulders", "equip": "barbell", "type": "compound"}
+  ]
+}

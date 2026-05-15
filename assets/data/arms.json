@@ -1,0 +1,24 @@
+{
+  "exercises": [
+    {"id": "arm_61", "name": "Barbell Bicep Curl", "cat": "arms", "equip": "barbell", "type": "isolation"},
+    {"id": "arm_62", "name": "Dumbbell Alternating Curl", "cat": "arms", "equip": "dumbbells", "type": "isolation"},
+    {"id": "arm_63", "name": "Hammer Curls", "cat": "arms", "equip": "dumbbells", "type": "isolation"},
+    {"id": "arm_64", "name": "Preacher Curls", "cat": "arms", "equip": "ez-bar", "type": "isolation"},
+    {"id": "arm_65", "name": "EZ-Bar Curl", "cat": "arms", "equip": "ez-bar", "type": "isolation"},
+    {"id": "arm_66", "name": "Concentration Curls", "cat": "arms", "equip": "dumbbells", "type": "isolation"},
+    {"id": "arm_67", "name": "Incline Dumbbell Curls", "cat": "arms", "equip": "dumbbells", "type": "isolation"},
+    {"id": "arm_68", "name": "Cable Bicep Curls", "cat": "arms", "equip": "cable", "type": "isolation"},
+    {"id": "arm_69", "name": "Spider Curls", "cat": "arms", "equip": "barbell", "type": "isolation"},
+    {"id": "arm_70", "name": "Close-Grip Bench Press", "cat": "arms", "equip": "barbell", "type": "compound"},
+    {"id": "arm_71", "name": "Tricep Pushdowns (Rope attachment)", "cat": "arms", "equip": "cable", "type": "isolation"},
+    {"id": "arm_72", "name": "Tricep Pushdowns (Straight bar)", "cat": "arms", "equip": "cable", "type": "isolation"},
+    {"id": "arm_73", "name": "Skull Crushers (EZ-Bar)", "cat": "arms", "equip": "ez-bar", "type": "isolation"},
+    {"id": "arm_74", "name": "Overhead Dumbbell Tricep Extension", "cat": "arms", "equip": "dumbbells", "type": "isolation"},
+    {"id": "arm_75", "name": "Overhead Cable Tricep Extension (Long head focus)", "cat": "arms", "equip": "cable", "type": "isolation"},
+    {"id": "arm_76", "name": "Dips (Tricep focus)", "cat": "arms", "equip": "bodyweight", "type": "compound"},
+    {"id": "arm_77", "name": "Diamond Push-ups", "cat": "arms", "equip": "bodyweight", "type": "compound"},
+    {"id": "arm_78", "name": "Single-Arm Cable Tricep Kickback", "cat": "arms", "equip": "cable", "type": "isolation"},
+    {"id": "arm_79", "name": "Reverse Grip Curls (Forearms)", "cat": "arms", "equip": "barbell", "type": "isolation"},
+    {"id": "arm_80", "name": "Wrist Curls (Barbell or Dumbbell)", "cat": "arms", "equip": "dumbbells", "type": "isolation"}
+  ]
+}

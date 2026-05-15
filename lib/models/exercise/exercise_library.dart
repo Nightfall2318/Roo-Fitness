@@ -1,13 +1,17 @@
 class ExerciseLibrary {
-  final int? id;
+  final String id;
   final String name;
-  final String category; // e.g., 'Chest', 'Legs'
+  final String cat;
+  final String equip;
+  final String type;
   final bool isCustom;
 
   ExerciseLibrary({
-    this.id,
+    required this.id,
     required this.name,
-    required this.category,
+    required this.cat,
+    required this.equip,
+    required this.type,
     this.isCustom = false,
   });
 
@@ -15,17 +19,32 @@ class ExerciseLibrary {
     return {
       'id': id,
       'name': name,
-      'category': category,
+      'cat': cat,
+      'equip': equip,
+      'type': type,
       'isCustom': isCustom ? 1 : 0,
     };
   }
 
   factory ExerciseLibrary.fromMap(Map<String, dynamic> map) {
     return ExerciseLibrary(
-      id: map['id'],
-      name: map['name'],
-      category: map['category'],
+      id: map['id'] as String,
+      name: map['name'] as String,
+      cat: map['cat'] as String,
+      equip: map['equip'] as String,
+      type: map['type'] as String,
       isCustom: map['isCustom'] == 1,
+    );
+  }
+
+  factory ExerciseLibrary.fromJson(Map<String, dynamic> json) {
+    return ExerciseLibrary(
+      id: json['id'] as String,
+      name: json['name'] as String,
+      cat: json['cat'] as String,
+      equip: json['equip'] as String,
+      type: json['type'] as String,
+      isCustom: false,
     );
   }
 }

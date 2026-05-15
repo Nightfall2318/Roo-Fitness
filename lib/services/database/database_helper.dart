@@ -1,5 +1,8 @@
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
+import 'dart:convert';
+import 'package:flutter/services.dart';
+import 'package:flutter/foundation.dart';
 import '../../models/workout/workout.dart';
 import '../../models/user/user_profile.dart';
 import '../../models/workout/exercise.dart';
@@ -27,7 +30,7 @@ class DatabaseHelper {
     String path = join(await getDatabasesPath(), 'fitness_app.db');
     return await openDatabase(
       path,
-      version: 4,
+      version: 5,
       onCreate: _onCreate,
       onUpgrade: _onUpgrade,
     );
@@ -63,6 +66,21 @@ class DatabaseHelper {
           FOREIGN KEY (templateId) REFERENCES programs (id) ON DELETE CASCADE
         )
       ''');
+    }
+    if (oldVersion < 5) {
+      // Migrate exercise_library to new schema
+      await db.execute('DROP TABLE IF EXISTS exercise_library');
+      await db.execute('''
+        CREATE TABLE exercise_library(
+          id TEXT PRIMARY KEY,
+          name TEXT,
+          cat TEXT,
+          equip TEXT,
+          type TEXT,
+          isCustom INTEGER
+        )
+      ''');
+      await _seedExerciseLibrary(db);
     }
   }
 
@@ -135,23 +153,46 @@ class DatabaseHelper {
 
     await db.execute('''
       CREATE TABLE exercise_library(
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        id TEXT PRIMARY KEY,
         name TEXT,
-        category TEXT,
+        cat TEXT,
+        equip TEXT,
+        type TEXT,
         isCustom INTEGER
       )
     ''');
 
-    // Populate library with defaults
-    final List<Map<String, dynamic>> defaults = [
-      {'name': 'Bench Press', 'category': 'Chest', 'isCustom': 0},
-      {'name': 'Squat', 'category': 'Legs', 'isCustom': 0},
-      {'name': 'Deadlift', 'category': 'Back', 'isCustom': 0},
-      {'name': 'Overhead Press', 'category': 'Shoulders', 'isCustom': 0},
-      {'name': 'Pull Ups', 'category': 'Back', 'isCustom': 0},
-    ];
-    for (var item in defaults) {
-      await db.insert('exercise_library', item);
+    await _seedExerciseLibrary(db);
+  }
+
+  Future<void> _seedExerciseLibrary(Database db) async {
+    try {
+      final List<String> assetFiles = [
+        'assets/data/chest.json',
+        'assets/data/back.json',
+        'assets/data/shoulders.json',
+        'assets/data/arms.json',
+        'assets/data/legs.json',
+      ];
+
+      for (String file in assetFiles) {
+        final String response = await rootBundle.loadString(file);
+        final data = json.decode(response);
+        final List exercises = data['exercises'];
+
+        for (var exerciseJson in exercises) {
+          await db.insert('exercise_library', {
+            'id': exerciseJson['id'],
+            'name': exerciseJson['name'],
+            'cat': exerciseJson['cat'],
+            'equip': exerciseJson['equip'],
+            'type': exerciseJson['type'],
+            'isCustom': 0,
+          });
+        }
+      }
+    } catch (e) {
+      debugPrint('Error seeding exercises: $e');
     }
   }
 

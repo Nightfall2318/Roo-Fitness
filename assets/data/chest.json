@@ -1,0 +1,24 @@
+{
+  "exercises": [
+    {"id": "ch_01", "name": "Barbell Bench Press", "cat": "chest", "equip": "barbell", "type": "compound"},
+    {"id": "ch_02", "name": "Dumbbell Flat Bench Press", "cat": "chest", "equip": "dumbbells", "type": "compound"},
+    {"id": "ch_03", "name": "Incline Barbell Bench Press", "cat": "chest", "equip": "barbell", "type": "compound"},
+    {"id": "ch_04", "name": "Incline Dumbbell Bench Press", "cat": "chest", "equip": "dumbbells", "type": "compound"},
+    {"id": "ch_05", "name": "Decline Barbell Bench Press", "cat": "chest", "equip": "barbell", "type": "compound"},
+    {"id": "ch_06", "name": "Decline Dumbbell Bench Press", "cat": "chest", "equip": "dumbbells", "type": "compound"},
+    {"id": "ch_07", "name": "Chest Press Machine", "cat": "chest", "equip": "machine", "type": "compound"},
+    {"id": "ch_08", "name": "Incline Chest Press Machine", "cat": "chest", "equip": "machine", "type": "compound"},
+    {"id": "ch_09", "name": "Cable Crossover (High to Low)", "cat": "chest", "equip": "cable", "type": "isolation"},
+    {"id": "ch_10", "name": "Cable Fly (Low to High)", "cat": "chest", "equip": "cable", "type": "isolation"},
+    {"id": "ch_11", "name": "Flat Bench Dumbbell Fly", "cat": "chest", "equip": "dumbbells", "type": "isolation"},
+    {"id": "ch_12", "name": "Incline Dumbbell Fly", "cat": "chest", "equip": "dumbbells", "type": "isolation"},
+    {"id": "ch_13", "name": "Pec Deck Machine", "cat": "chest", "equip": "machine", "type": "isolation"},
+    {"id": "ch_14", "name": "Weighted Dips (Chest focus)", "cat": "chest", "equip": "bodyweight", "type": "compound"},
+    {"id": "ch_15", "name": "Push-ups", "cat": "chest", "equip": "bodyweight", "type": "compound"},
+    {"id": "ch_16", "name": "Deficit Push-ups", "cat": "chest", "equip": "bodyweight", "type": "compound"},
+    {"id": "ch_17", "name": "Weighted Push-ups", "cat": "chest", "equip": "bodyweight", "type": "compound"},
+    {"id": "ch_18", "name": "Svend Press", "cat": "chest", "equip": "plate", "type": "isolation"},
+    {"id": "ch_19", "name": "Floor Press", "cat": "chest", "equip": "barbell", "type": "compound"},
+    {"id": "ch_20", "name": "Landmine Chest Press", "cat": "chest", "equip": "barbell", "type": "compound"}
+  ]
+}

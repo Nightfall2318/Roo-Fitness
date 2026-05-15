@@ -223,9 +223,14 @@ class _ProgramsScreenState extends State<ProgramsScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(template.name,
-                      style: const TextStyle(
-                          fontWeight: FontWeight.bold, fontSize: 18)),
+                  Expanded(
+                    child: Text(template.name,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 18)),
+                  ),
+                  const SizedBox(width: 12),
                   Text(
                       'Week ${active.currentWeek} of ${template.durationWeeks}',
                       style:

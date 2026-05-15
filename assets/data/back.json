@@ -1,0 +1,24 @@
+{
+  "exercises": [
+    {"id": "bk_21", "name": "Conventional Deadlift", "cat": "back", "equip": "barbell", "type": "compound"},
+    {"id": "bk_22", "name": "Barbell Bent-Over Row", "cat": "back", "equip": "barbell", "type": "compound"},
+    {"id": "bk_23", "name": "One-Arm Dumbbell Row", "cat": "back", "equip": "dumbbells", "type": "compound"},
+    {"id": "bk_24", "name": "Wide-Grip Lat Pulldown", "cat": "back", "equip": "machine", "type": "compound"},
+    {"id": "bk_25", "name": "Close-Grip Lat Pulldown", "cat": "back", "equip": "machine", "type": "compound"},
+    {"id": "bk_26", "name": "Seated Cable Row", "cat": "back", "equip": "cable", "type": "compound"},
+    {"id": "bk_27", "name": "T-Bar Row", "cat": "back", "equip": "barbell", "type": "compound"},
+    {"id": "bk_28", "name": "Pull-ups (Wide Grip)", "cat": "back", "equip": "bodyweight", "type": "compound"},
+    {"id": "bk_29", "name": "Chin-ups (Underhand Grip)", "cat": "back", "equip": "bodyweight", "type": "compound"},
+    {"id": "bk_30", "name": "Rack Pulls", "cat": "back", "equip": "barbell", "type": "compound"},
+    {"id": "bk_31", "name": "Chest-Supported Row", "cat": "back", "equip": "machine", "type": "compound"},
+    {"id": "bk_32", "name": "Pendlay Row", "cat": "back", "equip": "barbell", "type": "compound"},
+    {"id": "bk_33", "name": "Meadows Row", "cat": "back", "equip": "barbell", "type": "compound"},
+    {"id": "bk_34", "name": "Straight-Arm Cable Pulldown", "cat": "back", "equip": "cable", "type": "isolation"},
+    {"id": "bk_35", "name": "Face Pulls", "cat": "back", "equip": "cable", "type": "isolation"},
+    {"id": "bk_36", "name": "Single-Arm Lat Pulldown", "cat": "back", "equip": "cable", "type": "isolation"},
+    {"id": "bk_37", "name": "Barbell Shrugs", "cat": "back", "equip": "barbell", "type": "isolation"},
+    {"id": "bk_38", "name": "Dumbbell Shrugs", "cat": "back", "equip": "dumbbells", "type": "isolation"},
+    {"id": "bk_39", "name": "Hyperextensions (Back Extensions)", "cat": "back", "equip": "bodyweight", "type": "isolation"},
+    {"id": "bk_40", "name": "Reverse Fly Machine (Rear Delt/Mid-Back)", "cat": "back", "equip": "machine", "type": "isolation"}
+  ]
+}

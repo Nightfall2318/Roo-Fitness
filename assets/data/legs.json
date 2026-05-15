@@ -1,0 +1,24 @@
+{
+  "exercises": [
+    {"id": "leg_81", "name": "Barbell Back Squat", "cat": "legs", "equip": "barbell", "type": "compound"},
+    {"id": "leg_82", "name": "Front Squat", "cat": "legs", "equip": "barbell", "type": "compound"},
+    {"id": "leg_83", "name": "Leg Press (45 Degree)", "cat": "legs", "equip": "machine", "type": "compound"},
+    {"id": "leg_84", "name": "Hack Squat Machine", "cat": "legs", "equip": "machine", "type": "compound"},
+    {"id": "leg_85", "name": "Bulgarian Split Squats", "cat": "legs", "equip": "dumbbells", "type": "compound"},
+    {"id": "leg_86", "name": "Walking Dumbbell Lunges", "cat": "legs", "equip": "dumbbells", "type": "compound"},
+    {"id": "leg_87", "name": "Reverse Lunges", "cat": "legs", "equip": "dumbbells", "type": "compound"},
+    {"id": "leg_88", "name": "Leg Extensions", "cat": "legs", "equip": "machine", "type": "isolation"},
+    {"id": "leg_89", "name": "Goblet Squats", "cat": "legs", "equip": "dumbbells", "type": "compound"},
+    {"id": "leg_90", "name": "Romanian Deadlift (RDL)", "cat": "legs", "equip": "barbell", "type": "compound"},
+    {"id": "leg_91", "name": "Stiff-Legged Deadlift", "cat": "legs", "equip": "barbell", "type": "compound"},
+    {"id": "leg_92", "name": "Lying Leg Curl Machine", "cat": "legs", "equip": "machine", "type": "isolation"},
+    {"id": "leg_93", "name": "Seated Leg Curl Machine", "cat": "legs", "equip": "machine", "type": "isolation"},
+    {"id": "leg_94", "name": "Glute Ham Raise", "cat": "legs", "equip": "bodyweight", "type": "compound"},
+    {"id": "leg_95", "name": "Hip Thrusts (Barbell)", "cat": "legs", "equip": "barbell", "type": "compound"},
+    {"id": "leg_96", "name": "Glute Kickbacks (Cable)", "cat": "legs", "equip": "cable", "type": "isolation"},
+    {"id": "leg_97", "name": "Standing Calf Raise", "cat": "legs", "equip": "machine", "type": "isolation"},
+    {"id": "leg_98", "name": "Seated Calf Raise", "cat": "legs", "equip": "machine", "type": "isolation"},
+    {"id": "leg_99", "name": "Donkey Calf Raise", "cat": "legs", "equip": "machine", "type": "isolation"},
+    {"id": "leg_100", "name": "Sumo Deadlift", "cat": "legs", "equip": "barbell", "type": "compound"}
+  ]
+}
