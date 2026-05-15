@@ -314,11 +314,11 @@ class _BrowseTemplatesScreenState extends State<BrowseTemplatesScreen> {
   }
 
   void _editProgram(Program program) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Edit functionality coming soon!'),
-        backgroundColor: Color(0xFF003CCF),
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => AddWorkoutScreen(program: program),
       ),
-    );
+    ).then((_) => setState(() {}));
   }
 }

@@ -106,8 +106,8 @@ class _QuickWorkoutScreenState extends State<QuickWorkoutScreen> {
       _loggedExercises.add(Exercise(
         workoutId: 0, // Temporary
         name: libItem.name,
-        sets: 3,
-        reps: 10,
+        sets: 1,
+        reps: 0,
         weight: 0,
       ));
     });

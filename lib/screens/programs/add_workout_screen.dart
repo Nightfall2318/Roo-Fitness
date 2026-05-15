@@ -6,7 +6,8 @@ import '../../models/exercise/exercise_library.dart';
 import '../../services/database/database_helper.dart';
 
 class AddWorkoutScreen extends StatefulWidget {
-  const AddWorkoutScreen({super.key});
+  final Program? program;
+  const AddWorkoutScreen({super.key, this.program});
 
   @override
   State<AddWorkoutScreen> createState() => _AddWorkoutScreenState();
@@ -33,6 +34,29 @@ class _AddWorkoutScreenState extends State<AddWorkoutScreen> {
   void initState() {
     super.initState();
     _loadLibrary();
+    if (widget.program != null) {
+      _loadExistingProgram();
+    }
+  }
+
+  Future<void> _loadExistingProgram() async {
+    final p = widget.program!;
+    _nameController.text = p.name;
+    _weeksController.text = p.durationWeeks.toString();
+
+    final days = await _dbHelper.getDayTemplatesForProgram(p.id!);
+    for (var day in days) {
+      setState(() {
+        _selectedDays.add(day.dayOfWeek);
+        _routineControllers[day.dayOfWeek] = TextEditingController(text: day.routineName);
+        _dayExercises[day.dayOfWeek] = [];
+      });
+      
+      final exercises = await _dbHelper.getExerciseTemplatesForDay(day.id!);
+      setState(() {
+        _dayExercises[day.dayOfWeek] = exercises;
+      });
+    }
   }
 
   Future<void> _loadLibrary() async {
@@ -131,40 +155,101 @@ class _AddWorkoutScreenState extends State<AddWorkoutScreen> {
       _dayExercises[day]!.add(ExerciseTemplate(
         dayTemplateId: 0, // Temporary
         exerciseName: libItem.name,
-        targetSets: 3,
-        targetReps: 10,
+        targetSets: 1,
+        targetReps: 0,
       ));
     });
   }
 
+  void _removeExerciseFromDay(String day, int index) {
+    setState(() {
+      _dayExercises[day]!.removeAt(index);
+    });
+  }
+
+  void _editExerciseInDay(String day, int index) {
+    final ex = _dayExercises[day]![index];
+    final setsController = TextEditingController(text: ex.targetSets.toString());
+    final repsController = TextEditingController(text: ex.targetReps.toString());
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Edit ${ex.exerciseName}'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(controller: setsController, keyboardType: TextInputType.number, decoration: const InputDecoration(labelText: 'Target Sets')),
+            TextField(controller: repsController, keyboardType: TextInputType.number, decoration: const InputDecoration(labelText: 'Target Reps')),
+          ],
+        ),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancel')),
+          ElevatedButton(
+            onPressed: () {
+              setState(() {
+                _dayExercises[day]![index] = ExerciseTemplate(
+                  dayTemplateId: ex.dayTemplateId,
+                  exerciseName: ex.exerciseName,
+                  targetSets: int.tryParse(setsController.text) ?? ex.targetSets,
+                  targetReps: int.tryParse(repsController.text) ?? ex.targetReps,
+                );
+              });
+              Navigator.pop(context);
+            },
+            child: const Text('Save'),
+          ),
+        ],
+      ),
+    );
+  }
+
   Future<void> _saveProgram() async {
     try {
-      final program = Program(
-        name: _nameController.text,
-        durationWeeks: int.tryParse(_weeksController.text) ?? 12,
-      );
-
-      final programId = await _dbHelper.insertProgram(program);
-
-      for (var day in _selectedDays) {
-        final dayId = await _dbHelper.insertDayTemplate(DayTemplate(
-          programId: programId,
-          dayOfWeek: day,
-          routineName: _routineControllers[day]?.text ?? 'Workout',
-        ));
-
-        for (var ex in _dayExercises[day]!) {
-          await _dbHelper.insertExerciseTemplate(ExerciseTemplate(
-            dayTemplateId: dayId,
-            exerciseName: ex.exerciseName,
-            targetSets: ex.targetSets,
-            targetReps: ex.targetReps,
+      if (widget.program == null) {
+        // Create new
+        final program = Program(
+          name: _nameController.text,
+          durationWeeks: int.tryParse(_weeksController.text) ?? 12,
+        );
+        final programId = await _dbHelper.insertProgram(program);
+        final sortedDays = _selectedDays.toList()..sort((a, b) => _days.indexOf(a).compareTo(_days.indexOf(b)));
+        for (var day in sortedDays) {
+          final dayId = await _dbHelper.insertDayTemplate(DayTemplate(
+            programId: programId,
+            dayOfWeek: day,
+            routineName: _routineControllers[day]?.text ?? 'Workout',
           ));
+          for (var ex in _dayExercises[day]!) {
+            await _dbHelper.insertExerciseTemplate(ExerciseTemplate(
+              dayTemplateId: dayId,
+              exerciseName: ex.exerciseName,
+              targetSets: ex.targetSets,
+              targetReps: ex.targetReps,
+            ));
+          }
         }
+      } else {
+        // Update existing
+        final program = Program(
+          id: widget.program!.id,
+          name: _nameController.text,
+          durationWeeks: int.tryParse(_weeksController.text) ?? 12,
+        );
+        
+        final Map<String, String> routines = {};
+        for (var day in _selectedDays) {
+          routines[day] = _routineControllers[day]?.text ?? 'Workout';
+        }
+        
+        await _dbHelper.updateProgramFull(program, routines, _dayExercises);
       }
 
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Full Program Saved!'), backgroundColor: Colors.green));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(widget.program == null ? 'Full Program Saved!' : 'Program Updated!'),
+        backgroundColor: Colors.green,
+      ));
       Navigator.pop(context);
     } catch (e) {
       if (!mounted) return;
@@ -255,10 +340,11 @@ class _AddWorkoutScreenState extends State<AddWorkoutScreen> {
   }
 
   Widget _buildStep2() {
+    final sortedDays = _selectedDays.toList()..sort((a, b) => _days.indexOf(a).compareTo(_days.indexOf(b)));
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       const Text('NAME YOUR ROUTINES', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
       const SizedBox(height: 24),
-      ..._selectedDays.map((day) => Padding(padding: const EdgeInsets.only(bottom: 20),
+      ...sortedDays.map((day) => Padding(padding: const EdgeInsets.only(bottom: 20),
         child: Row(children: [
           SizedBox(width: 60, child: Text(day, style: const TextStyle(fontWeight: FontWeight.bold))),
           Expanded(child: TextField(controller: _routineControllers[day], decoration: InputDecoration(hintText: 'e.g., Push Day', border: OutlineInputBorder(borderRadius: BorderRadius.circular(12))))),
@@ -267,10 +353,11 @@ class _AddWorkoutScreenState extends State<AddWorkoutScreen> {
   }
 
   Widget _buildStep3() {
+    final sortedDays = _selectedDays.toList()..sort((a, b) => _days.indexOf(a).compareTo(_days.indexOf(b)));
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       const Text('ASSIGN EXERCISES', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
       const SizedBox(height: 24),
-      ..._selectedDays.map((day) => _buildDayExercisePicker(day)),
+      ...sortedDays.map((day) => _buildDayExercisePicker(day)),
     ]);
   }
 
@@ -285,10 +372,36 @@ class _AddWorkoutScreenState extends State<AddWorkoutScreen> {
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Text('$day: $routineName', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Color(0xFF003CCF))),
         const SizedBox(height: 15),
-        ...exercises.map((ex) => Padding(
-          padding: const EdgeInsets.only(bottom: 8),
-          child: Text('• ${ex.exerciseName} (${ex.targetSets}x${ex.targetReps})', style: const TextStyle(fontSize: 13)),
-        )),
+        ...exercises.asMap().entries.map((entry) {
+          final idx = entry.key;
+          final ex = entry.value;
+          return Padding(
+            padding: const EdgeInsets.only(bottom: 4),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    '• ${ex.exerciseName} (${ex.targetSets}x${ex.targetReps})',
+                    style: const TextStyle(fontSize: 13),
+                  ),
+                ),
+                IconButton(
+                  icon: const Icon(Icons.edit_outlined, color: Color(0xFF003CCF), size: 16),
+                  padding: EdgeInsets.zero,
+                  constraints: const BoxConstraints(),
+                  onPressed: () => _editExerciseInDay(day, idx),
+                ),
+                const SizedBox(width: 8),
+                IconButton(
+                  icon: const Icon(Icons.close, color: Colors.red, size: 16),
+                  padding: EdgeInsets.zero,
+                  constraints: const BoxConstraints(),
+                  onPressed: () => _removeExerciseFromDay(day, idx),
+                ),
+              ],
+            ),
+          );
+        }),
         const SizedBox(height: 10),
         TextButton.icon(
           onPressed: () => _showExercisePicker(day),

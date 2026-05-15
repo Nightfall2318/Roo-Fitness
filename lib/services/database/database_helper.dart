@@ -214,6 +214,44 @@ class DatabaseHelper {
     return await db.insert('programs', program.toMap());
   }
 
+  Future<int> updateProgramBasic(Program program) async {
+    Database db = await database;
+    return await db.update('programs', program.toMap(), where: 'id = ?', whereArgs: [program.id]);
+  }
+
+  Future<void> updateProgramFull(Program program, Map<String, String> dayRoutines, Map<String, List<ExerciseTemplate>> dayExercises) async {
+    Database db = await database;
+    await db.transaction((txn) async {
+      // 1. Update program basic info
+      await txn.update('programs', program.toMap(), where: 'id = ?', whereArgs: [program.id]);
+      
+      // 2. Delete old day templates (and cascade to exercise templates)
+      await txn.delete('day_templates', where: 'programId = ?', whereArgs: [program.id]);
+      
+      // 3. Re-insert new structure
+      for (var entry in dayRoutines.entries) {
+        final dayOfWeek = entry.key;
+        final routineName = entry.value;
+        
+        final dayId = await txn.insert('day_templates', {
+          'programId': program.id,
+          'dayOfWeek': dayOfWeek,
+          'routineName': routineName,
+        });
+        
+        final exercises = dayExercises[dayOfWeek] ?? [];
+        for (var ex in exercises) {
+          await txn.insert('exercise_templates', {
+            'dayTemplateId': dayId,
+            'exerciseName': ex.exerciseName,
+            'targetSets': ex.targetSets,
+            'targetReps': ex.targetReps,
+          });
+        }
+      }
+    });
+  }
+
   Future<List<Program>> getPrograms() async {
     Database db = await database;
     List<Map<String, dynamic>> maps = await db.query('programs');
